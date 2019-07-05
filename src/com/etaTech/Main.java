@@ -17,12 +17,21 @@ public class Main {
 
 
             URL url = new URL("http://example.org");
-            URLConnection urlConnection = url.openConnection();
-            urlConnection.setDoOutput(true);
-            urlConnection.connect();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("User-Agent", "Chrome");
+            connection.setReadTimeout(30000);
+
+            int responseCode = connection.getResponseCode();
+            System.out.println("Response code: " + responseCode);
+
+            if(responseCode != 200) {
+                System.out.println("Error reading web page");
+                return;
+            }
 
             BufferedReader inputStream = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(connection.getInputStream()));
 
             String line = "";
             while(line != null) {
